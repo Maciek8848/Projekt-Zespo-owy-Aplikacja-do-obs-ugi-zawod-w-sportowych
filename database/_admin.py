@@ -50,7 +50,96 @@ def printAll():
     conn.commit()
     conn.close()
 
-# print(__name__)
+def alter(table:str, id:int, colm:list, val:list)->statusCode:
+    if len(colm) != len(val):
+        raise ValueError("colm i val nie maja takiej samej długości")
+    
+    conn = sqlite3.connect(databaseName)
+    cursor = conn.cursor()
+
+    query = f"UPDATE {table} SET {','.join(colm)} WHERE id=?"
+    val.append(id)
+    retCode = statusCode.SUCCESS
+    try:
+        cursor.execute(query, val)
+        if cursor.rowcount == 0:
+            retCode = statusCode.NOT_EXIT
+        elif cursor.rowcount > 1:
+            raise Exception("były duplikaty, jakoś")
+        conn.commit()
+    except sqlite3.IntegrityError as e:
+        conn.rollback()
+        if not e.sqlite_errorname == "SQLITE_CONSTRAINT_UNIQUE": raise
+        retCode = statusCode.EXIT
+    except Exception as e:
+        conn.rollback()
+        raise
+
+    conn.close()
+
+    return retCode
+
+def getId(table:str, colm:str , login):
+    conn = sqlite3.connect(databaseName)
+    cursor = conn.cursor()
+
+    query = f"SELECT id FROM {table} WHERE {colm}=?"
+    cursor.execute(query, (login,))
+    data = cursor.fetchone()
+
+    conn.close()
+
+    if(data is None): return None
+    return data[0]
+
+def get(table:str, ids:list[int]|None, colm:list[str]) -> list:
+    find = []
+    values = []
+
+    if ids is not None:
+        for i in ids:
+            find.append("?")
+            values.append(i)
+
+    conn = sqlite3.connect(databaseName)
+    cursor = conn.cursor()
+
+    query = f"SELECT id, {','.join(colm)} FROM {table}"
+    if ids is not None:
+        query += f" WHERE id in ({','.join(find)})" # id jak narazie zostaje dla table
+
+    cursor.execute(query, values)
+    data = cursor.fetchall()
+
+    conn.close()
+
+    return data
+
+def delete(table:str, id:int):
+    # triger handels usuwanie
+    conn = sqlite3.connect(databaseName)
+    cursor = conn.cursor()
+
+    retCode = statusCode.SUCCESS
+    try:
+        cursor.execute(
+            f"DELETE FROM {table} WHERE id=?",
+            (id,)
+        )
+
+        if cursor.rowcount == 0:
+            retCode = statusCode.NOT_EXIT
+        elif cursor.rowcount > 1:
+            raise Exception("były duplikaty, jakoś")
+
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
+
+    conn.close()
+
+    return retCode
 
 if __name__ == "__main__":
     printAll()
