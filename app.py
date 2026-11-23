@@ -1,6 +1,6 @@
 from flask import Flask, render_template_string
-from format_mock import knockout_mock
-from database_mock import DatabaseMock, STATE_REGISTRATION, STATE_IN_PROGRESS, STATE_FINISHED
+from mocks.format_mock import knockout_mock
+from mocks.database_mock import DatabaseMock, STATE_REGISTRATION, STATE_IN_PROGRESS, STATE_FINISHED
 
 ROUND_GENERATORS = {
     "knockout": knockout_mock,
