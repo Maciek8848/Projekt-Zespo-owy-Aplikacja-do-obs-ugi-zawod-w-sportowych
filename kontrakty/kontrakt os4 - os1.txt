@@ -1,0 +1,69 @@
+Wersja 1.0
+
+Legenda:
+nazwa_metody(podawane_parametry) - co_robi -> co_ma_zwracać
+
+zawodnik = osoba (jeśli sport indywidualny) lub drużyna (jeśli drużynowy)
+zwracany zawodnik ma być słownikiem posiadającym co najmniej pola:  
+{
+    "id"
+    "name"
+}
+
+zwracany turniej ma być słownikiem posiadającym co najmniej pola:
+{
+    "id"
+    "name"
+    "format" - format jest jako zwykły string
+    "state" - np. STATE_REGISTRATION = "registration", ty tylko je zapisujesz więc zakładam że ich nie potrzebujesz
+    "current_round" - po utworzeniu 1, zwiększać będą już moje metody
+}
+
+zwracany mecz ma być słownikiem posiadającym co najmniej pola:
+{
+    "id"
+    "tournament_id" - id turnieju do którego należy mecz
+    "round" - numer rundy (1+)
+    "player_ids" - lista id wszystkich uczestników tego meczu (np. 1v1 to lista dwóch id)
+    "scores" - lista wyników meczu dla poszczególnych uczestników, ta sama długość i kolejność co player_ids
+    "finished" - True/False czy został już zapisany wynik meczu
+}
+
+podawany matchups to lista metchup, gdzie metchup to słownik o polach
+{
+    "round" - numer rundy
+    "player_ids" - lista id wszystkich uczestników mających brać udział w tym meczu
+}
+
+
+Metody:
+add_player(name) - tworzy w bazie nowego zawodnika -> utworzony zawodnik
+
+get_player(player_id) -> zawodnik  albo  None jeśli nie istnieje
+
+
+add_tournament(name, format, state) - tworzy w bazie nowy turniej -> utworzony turniej
+
+get_tournament(tournament_id) -> turniej o podanym id  albo  None jeśli nie istnieje
+
+update_tournament(tournament_id, **fields) - updatuje fields w danym turnieju -> zupdatowany turniej
+
+
+add_participant(tournament_id, player_id) - rejestruje istniejącego zawodnika na turniej -> nic
+
+get_participants(tournament_id) -> lista wszystkich zawodników zarejestrowanych do danego turnieju
+
+
+add_matches(tournament_id, matchups) - zapisuje w bazie nowe mecze, tworzone na podstawnie kolejnych matchup z matchups[] -> nic
+
+get_matches(tournament_id) -> lista wszystkich meczów przypisanych do tego turnieju
+
+get_match(match_id) -> mecz o podanym id  albo  None jeśli nie istnieje
+
+save_result(match_id, scores) - updateuje scores i ustawia finished na True w danym meczu -> zupdatowany mecz
+
+
+Dodatkowe:
+- Baza danych (czyli Ty) odpowiadasz za nadawanie unikalnego id obiektom które tworzysz w bazie
+- Jeśli jest niejasne jak coś ma działać, możesz spojrzeć na moje mocki na githubie
+
