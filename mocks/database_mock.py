@@ -1,10 +1,4 @@
 
-# Stany turnieju
-STATE_REGISTRATION = "registration"
-STATE_IN_PROGRESS = "in_progress"
-STATE_FINISHED = "finished"
-
-
 class DatabaseMock:
     def __init__(self):
         self._players = {}
@@ -26,12 +20,12 @@ class DatabaseMock:
         player = self._players.get(player_id)
         return player
 
-    def add_tournament(self, name, format):
+    def add_tournament(self, name, format, state):
         tournament = {
             "id": self._next_id(),
             "name": name,
             "format": format,
-            "state": STATE_REGISTRATION,
+            "state": state,
             "current_round": 0,
         }
         self._tournaments[tournament["id"]] = tournament

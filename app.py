@@ -1,7 +1,13 @@
 from flask import Flask, render_template_string
 from mocks.format_mock import knockout_mock
-from mocks.database_mock import DatabaseMock, STATE_REGISTRATION, STATE_IN_PROGRESS, STATE_FINISHED
+from mocks.database_mock import DatabaseMock
 
+# Stany turnieju
+STATE_REGISTRATION = "registration"
+STATE_IN_PROGRESS = "in_progress"
+STATE_FINISHED = "finished"
+
+# Formaty turnieju - generatory rund
 ROUND_GENERATORS = {
     "knockout": knockout_mock,
 }
@@ -23,7 +29,7 @@ class TournamentService:
             raise Exception("Nazwa turnieju nie może być pusta.")
         if format not in self.round_generators:
             raise Exception(f"Nieznany format turnieju: {format}")
-        return self.db.add_tournament(name, format)
+        return self.db.add_tournament(name, format, STATE_REGISTRATION)
 
     def register_player(self, tournament_id, player_id):
         tournament = self._get_tournament_or_raise(tournament_id)
