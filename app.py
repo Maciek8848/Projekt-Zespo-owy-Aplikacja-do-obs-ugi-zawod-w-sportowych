@@ -44,7 +44,7 @@ class TournamentService:
             raise Exception("Nie można rozpocząć turnieju bez zawodników.")
         round_generator = self.round_generators[tournament["format"]]
         next_round_matches = round_generator(players, [], 1)
-        self.db.add_match(tournament_id, next_round_matches)
+        self.db.add_matches(tournament_id, next_round_matches)
         return self.db.update_tournament(tournament_id, state=STATE_IN_PROGRESS, current_round=1)
 
     def submit_result(self, match_id, scores):
@@ -72,7 +72,7 @@ class TournamentService:
         next_round_matches = round_generator(players, matches, current_round + 1)
         if not next_round_matches:
             return self.db.update_tournament(tournament_id, state=STATE_FINISHED)
-        self.db.add_match(tournament_id, next_round_matches)
+        self.db.add_matches(tournament_id, next_round_matches)
         return self.db.update_tournament(tournament_id, current_round=current_round + 1)
 
 

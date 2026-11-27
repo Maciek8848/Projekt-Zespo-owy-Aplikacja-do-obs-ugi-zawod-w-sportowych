@@ -52,7 +52,7 @@ class DatabaseMock:
     def get_participants(self, tournament_id):
         return [self._players[p_id] for p_id in self._participants[tournament_id]]
 
-    def add_match(self, tournament_id, matchups):
+    def add_matches(self, tournament_id, matchups):
         for matchup in matchups:
             match = {
                 "id": self._next_id(),
